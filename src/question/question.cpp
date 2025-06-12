@@ -1,7 +1,7 @@
 #include "question.hpp"
 
-fq::Question::Question(const std::string &question, const std::vector<Answer> &answers)
-    : questionText(question), answers(answers)
+fq::Question::Question(const std::string &question, const std::vector<Answer> &answers, const std::string &explanation)
+    : questionText(question), answers(answers), explanation(explanation)
 {
     if (answers.empty())
         throw std::invalid_argument("Question must have at least one answer");
@@ -12,34 +12,12 @@ fq::Question::Question(const std::string &question, const std::vector<Answer> &a
 double fq::SingleChoiceQuestion::getScore(const std::vector<Answer> &selectedAnswers)
 {
     if (selectedAnswers.empty())
-        throw std::invalid_argument("No answer selected");
-    if (selectedAnswers.size() > 1)
-        throw std::invalid_argument("Multiple answers selected for a single choice question");
-    if (selectedAnswers[0].isCorrect)
-        return 1.0;
-    return 0.0;
-}
-
-double fq::NegativeScoreSingleChoiceQuestion::getScore(const std::vector<Answer> &selectedAnswers)
-{
-    if (selectedAnswers.empty())
-        throw std::invalid_argument("No answer selected");
-    if (selectedAnswers.size() > 1)
-        throw std::invalid_argument("Multiple answers selected for a single choice question");
-    if (selectedAnswers[0].isCorrect)
-        return 1.0;
-    return -1.0;
-}
-
-double fq::SkippableNegativeScoreSingleChoiceQuestion::getScore(const std::vector<Answer> &selectedAnswers)
-{
-    if (selectedAnswers.empty())
         return 0.0;
     if (selectedAnswers.size() > 1)
         throw std::invalid_argument("Multiple answers selected for a single choice question");
     if (selectedAnswers[0].isCorrect)
         return 1.0;
-    return -1.0;
+    return 0.0;
 }
 
 double fq::MultipleChoiceQuestion::getScore(const std::vector<Answer> &selectedAnswers)
@@ -98,6 +76,7 @@ fq::Question *fq::Question::fromJSON(const QJsonObject &json)
     std::string type = json["type"].toString().toStdString();
     std::vector<Answer> answers;
     auto answersArray = json["answers"].toArray();
+    std::string explanation = json.contains("explanation") ? json["explanation"].toString().toStdString() : "No explanation provided";
     for (const QJsonValue &value : answersArray)
     {
         if (!value.isObject())
@@ -110,20 +89,24 @@ fq::Question *fq::Question::fromJSON(const QJsonObject &json)
         answer.isCorrect = answerObj["is_correct"].toBool();
         answers.push_back(answer);
     }
+    if (answers.empty())
+        throw std::invalid_argument("Question must have at least one answer");
+    std::random_device rd;
+    std::mt19937 g(rd());
+    std::shuffle(answers.begin(), answers.end(), g);
     if (type == "single")
         return new SingleChoiceQuestion(json["text"].toString().toStdString(),
-                                        answers);
-    else if (type == "negative_single")
-        return new NegativeScoreSingleChoiceQuestion(json["text"].toString().toStdString(),
-                                                     answers);
-    else if (type == "skippable_negative_single")
-        return new SkippableNegativeScoreSingleChoiceQuestion(json["text"].toString().toStdString(),
-                                                              answers);
+                                        answers, explanation);
     else if (type == "multiple")
         return new MultipleChoiceQuestion(json["text"].toString().toStdString(),
-                                          answers);
+                                          answers, explanation);
     else if (type == "negative_multiple")
         return new NegativeScoreMultipleChoiceQuestion(json["text"].toString().toStdString(),
-                                                       answers);
+                                                       answers, explanation);
     throw std::invalid_argument("Unknown question type: " + type);
+}
+
+std::string fq::Question::getExplanation() const
+{
+    return explanation;
 }

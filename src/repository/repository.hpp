@@ -46,11 +46,23 @@ namespace fq
         /// @param score The score gained by the user from the question.
         virtual void returnQuestion(fq::Question *question, double score) = 0;
 
+        /// @brief Returns the number of questions in the repository.
+        /// @return The number of questions available in the repository.
+        std::size_t getQuestionCount() const;
+
         /// @brief Factory function to create a repository based on the specified path.
         /// @param path The path to the JSON file containing the questions.
         /// @return A pointer to a Repository object.
         /// @throws std::runtime_error if the file cannot be opened or if the JSON format is invalid.
         static Repository *createRepository(const std::string &path);
+
+        /// @brief Returns the collection of questions in the repository.
+        /// @return A vector of pointers to Question objects.
+        std::vector<fq::Question *> getQuestions() const { return questions; }
+
+        /// @brief Sets the collection of questions in the repository.
+        /// @param questions_ A vector of pointers to Question objects to be set in the repository.
+        void setQuestions(const std::vector<fq::Question *> &questions_) { questions = questions_; }
     };
 
     /// @brief Class representing a repository that provides questions randomly.

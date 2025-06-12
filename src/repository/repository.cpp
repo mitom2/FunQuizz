@@ -22,6 +22,11 @@ fq::Repository::Repository(const std::string &path)
         throw std::runtime_error("No questions found in the repository");
 }
 
+std::size_t fq::Repository::getQuestionCount() const
+{
+    return questions.size();
+}
+
 fq::Question *fq::RandomRepository::getQuestion()
 {
     if (questions.empty())

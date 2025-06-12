@@ -7,18 +7,25 @@ if (MSVC)
     add_compile_options(/Zc:__cplusplus /permissive-)
 endif()
 
-find_package(Qt6 REQUIRED COMPONENTS Core)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)  # Important!
+set(CMAKE_AUTORCC ON)
+
+find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 qt_standard_project_setup()
 
 qt_add_executable(FunQuizz
     main.cpp
     src/question/question.cpp
     src/repository/repository.cpp
+    src/ui/mainwindow.cpp
+    src/ui/managequestions.cpp
 )
 
 target_include_directories(FunQuizz PRIVATE
     src/question
     src/repository
+    src/ui
 )
 
-target_link_libraries(FunQuizz PRIVATE Qt6::Core)
+target_link_libraries(FunQuizz PRIVATE Qt6::Core Qt6::Widgets)
