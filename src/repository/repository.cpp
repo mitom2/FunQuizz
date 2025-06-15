@@ -93,3 +93,44 @@ fq::Repository *fq::Repository::createRepository(const std::string &path)
 
     throw std::runtime_error("Unknown repository type: " + type.toStdString());
 }
+
+void fq::Repository::setQuestions(const std::vector<fq::Question *> &questions_)
+{
+    for (auto &question : questions)
+    {
+        if (std::find(questions_.begin(), questions_.end(), question) == questions_.end())
+            delete question;
+    }
+    questions = questions_;
+}
+
+fq::Repository::~Repository()
+{
+    for (auto &question : questions)
+    {
+        delete question;
+    }
+}
+
+void fq::RandomNonRepeatingRepository::setQuestions(const std::vector<fq::Question *> &questions_)
+{
+    for (auto &question : questions)
+    {
+        if (std::find(questions_.begin(), questions_.end(), question) == questions_.end())
+            delete question;
+    }
+    questions = questions_;
+    remainingQuestions = questions;
+}
+
+void fq::IntelligentRepository::setQuestions(const std::vector<fq::Question *> &questions_)
+{
+    for (auto &question : questions)
+    {
+        if (std::find(questions_.begin(), questions_.end(), question) == questions_.end())
+            delete question;
+    }
+    questions = questions_;
+    remainingQuestions = questions;
+    hardQuestions.clear();
+}

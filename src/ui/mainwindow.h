@@ -30,7 +30,7 @@ class MainWindow : public QMainWindow
 
     fq::Question *currentQuestion;
 
-    void okReleased();
+    void okClicked(bool checked);
 
     void loadQuestion();
 

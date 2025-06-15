@@ -2,6 +2,8 @@
 #define MANAGEQUESTIONS_H
 
 #include <QDialog>
+#include <unordered_map>
+#include <stdexcept>
 #include "repository.hpp"
 
 QT_BEGIN_NAMESPACE
@@ -17,7 +19,13 @@ class ManageQuestions : public QDialog
 
     fq::Repository *repository;
 
-    std::vector<fq::Question *> questions;
+    std::unordered_map<std::string, fq::Question *> questions;
+
+    void removeQuestions();
+
+    void updateQuestionsList();
+
+    void addQuestions();
 
 public:
     explicit ManageQuestions(fq::Repository *repository, QWidget *parent = nullptr);

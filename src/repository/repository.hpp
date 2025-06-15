@@ -62,7 +62,10 @@ namespace fq
 
         /// @brief Sets the collection of questions in the repository.
         /// @param questions_ A vector of pointers to Question objects to be set in the repository.
-        void setQuestions(const std::vector<fq::Question *> &questions_) { questions = questions_; }
+        virtual void setQuestions(const std::vector<fq::Question *> &questions_);
+
+        /// @brief Virtual destructor for the Repository class.
+        virtual ~Repository();
     };
 
     /// @brief Class representing a repository that provides questions randomly.
@@ -108,6 +111,10 @@ namespace fq
         /// @param question A pointer to the Question object to be returned.
         /// @param score The score gained by the user from the question.
         virtual void returnQuestion(fq::Question *question, double score) override {};
+
+        /// @brief Sets the collection of questions in the repository.
+        /// @param questions_ A vector of pointers to Question objects to be set in the repository.
+        virtual void setQuestions(const std::vector<fq::Question *> &questions_) override;
     };
 
     /// @brief Class representing a repository that provides questions intelligently based on user performance.
@@ -135,5 +142,9 @@ namespace fq
         /// @brief Returns a question back to the repository with its score.
         /// @details If the score is less than 1.0, the question is added to the hard questions collection for future consideration.
         virtual void returnQuestion(fq::Question *question, double score) override;
+
+        /// @brief Sets the collection of questions in the repository.
+        /// @param questions_ A vector of pointers to Question objects to be set in the repository.
+        virtual void setQuestions(const std::vector<fq::Question *> &questions_) override;
     };
 }

@@ -1,7 +1,7 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 
-void MainWindow::okReleased()
+void MainWindow::okClicked(bool checked)
 {
     if (!isAnswered)
     {
@@ -60,32 +60,57 @@ void MainWindow::okReleased()
 
 void MainWindow::loadQuestion()
 {
-    currentQuestion = repository->getQuestion();
-    ui->question->setText(currentQuestion->getQuestion().c_str());
-    currentAnswers = currentQuestion->getAnswers();
-    removeAnswers();
-    for (std::size_t i = 0; i < currentAnswers.size(); ++i)
+    try
     {
-        const auto &answer = currentAnswers[i];
-        if (currentQuestion->isSingleChoice())
+        currentQuestion = repository->getQuestion();
+        ui->question->setText(currentQuestion->getQuestion().c_str());
+        currentAnswers = currentQuestion->getAnswers();
+        removeAnswers();
+        for (std::size_t i = 0; i < currentAnswers.size(); ++i)
         {
-            auto answerWidget = new QRadioButton(QString::fromStdString(answer.text), this);
-            connect(answerWidget, &QRadioButton::toggled, this, &MainWindow::answerToggled);
-            answerWidget->setFont(ui->question->font());
-            ui->answers->addWidget(answerWidget);
+            const auto &answer = currentAnswers[i];
+            if (currentQuestion->isSingleChoice())
+            {
+                auto answerWidget = new QRadioButton(QString::fromStdString(answer.text), this);
+                connect(answerWidget, &QRadioButton::toggled, this, &MainWindow::answerToggled);
+                answerWidget->setFont(ui->question->font());
+                ui->answers->addWidget(answerWidget);
+            }
+            else
+            {
+                auto answerWidget = new QCheckBox(QString::fromStdString(answer.text), this);
+                connect(answerWidget, &QCheckBox::toggled, this, &MainWindow::answerToggled);
+                answerWidget->setFont(ui->question->font());
+                ui->answers->addWidget(answerWidget);
+            }
         }
-        else
-        {
-            auto answerWidget = new QCheckBox(QString::fromStdString(answer.text), this);
-            connect(answerWidget, &QCheckBox::toggled, this, &MainWindow::answerToggled);
-            answerWidget->setFont(ui->question->font());
-            ui->answers->addWidget(answerWidget);
-        }
+        ui->ok->setText("Skip");
+        ui->ok->setEnabled(true);
+        ui->explanation->setText("");
+        isAnswered = false;
+        selectedAnswers = 0;
+        return;
     }
-    ui->ok->setText("Skip");
+    catch (const std::invalid_argument &e)
+    {
+        QMessageBox::warning(this, "Error", QString::fromStdString(e.what()));
+    }
+    catch (const std::runtime_error &e)
+    {
+        QMessageBox::critical(this, "Error", QString::fromStdString(e.what()));
+    }
+    catch (const std::exception &e)
+    {
+        QMessageBox::critical(this, "Error", QString::fromStdString(e.what()));
+    }
+    ui->score->setText("0/0");
+    ui->scoreBar->setValue(0);
     ui->explanation->setText("");
-    isAnswered = false;
-    selectedAnswers = 0;
+    ui->totalQuestions->setText("Total questions in repository: " + QString::number(repository->getQuestionCount()));
+    ui->ok->setEnabled(false);
+    ui->ok->setText("");
+    ui->question->setText("No questions available");
+    removeAnswers();
 }
 
 void MainWindow::removeAnswers()
@@ -115,7 +140,6 @@ void MainWindow::repositoryAction(QAction *action)
 {
     try
     {
-
         if (action == ui->openRepository)
         {
             QString fileName = QFileDialog::getOpenFileName(this, "Open Repository", "", "JSON Files (*.json);;All Files (*)");
@@ -150,7 +174,12 @@ void MainWindow::manageQuestions(QAction *action)
         {
             ManageQuestions *manageQuestions = new ManageQuestions(repository, this);
             manageQuestions->setAttribute(Qt::WA_DeleteOnClose);
-            manageQuestions->show();
+            manageQuestions->exec();
+            ui->score->setText("0/0");
+            ui->scoreBar->setValue(0);
+            ui->explanation->setText("");
+            ui->totalQuestions->setText("Total questions in repository: " + QString::number(repository->getQuestionCount()));
+            loadQuestion();
         }
     }
     catch (const std::invalid_argument &e)
@@ -179,7 +208,7 @@ void MainWindow::loadRepository(const std::string &repositoryPath)
         ui->explanation->setText("");
         ui->totalQuestions->setText("Total questions in repository: " + QString::number(repository->getQuestionCount()));
         loadQuestion();
-        ui->ok->setEnabled(true);
+        ui->manageQuestions->setEnabled(true);
         return;
     }
     catch (const std::invalid_argument &e)
@@ -226,7 +255,7 @@ MainWindow::MainWindow(QWidget *parent)
     : QMainWindow(parent), ui(new Ui::MainWindow), isAnswered(false), currentQuestion(nullptr), selectedAnswers(0), totalQuestions(0), totalScore(0.0), repository(nullptr)
 {
     ui->setupUi(this);
-    connect(ui->ok, &QPushButton::released, this, &MainWindow::okReleased);
+    connect(ui->ok, &QPushButton::clicked, this, &MainWindow::okClicked);
     connect(ui->repository, &QMenu::triggered, this, &MainWindow::repositoryAction);
     connect(ui->questions, &QMenu::triggered, this, &MainWindow::manageQuestions);
     connect(ui->explanationSize, &QSlider::valueChanged, this, &MainWindow::fontSizeChanged);
@@ -237,6 +266,7 @@ MainWindow::MainWindow(QWidget *parent)
     ui->scoreBar->setValue(0);
     ui->explanation->setText("Welcome to the FunQuizz! Use repository menu to load a quiz repository and start answering questions.");
     ui->totalQuestions->setText("Repository not loaded yet.");
+    ui->manageQuestions->setEnabled(false);
 }
 
 MainWindow::~MainWindow()
