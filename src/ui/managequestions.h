@@ -27,6 +27,8 @@ class ManageQuestions : public QDialog
 
     void addQuestions();
 
+    void saveAndClose();
+
 public:
     explicit ManageQuestions(fq::Repository *repository, QWidget *parent = nullptr);
     ~ManageQuestions();

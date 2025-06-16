@@ -21,10 +21,21 @@ void ManageQuestions::updateQuestionsList()
     }
 }
 
+void ManageQuestions::saveAndClose()
+{
+    std::vector<fq::Question *> qvec;
+    qvec.reserve(questions.size());
+    for (const auto &pair : questions)
+        qvec.push_back(pair.second);
+    repository->setQuestions(qvec);
+    close();
+}
+
 ManageQuestions::ManageQuestions(fq::Repository *repository, QWidget *parent)
     : QDialog(parent), ui(new Ui::ManageQuestions), repository(repository)
 {
     ui->setupUi(this);
+    setWindowFlags(Qt::Window | Qt::WindowTitleHint | Qt::CustomizeWindowHint);
     if (repository == nullptr)
         throw std::invalid_argument("Repository cannot be null");
     auto q = repository->getQuestions();
@@ -33,14 +44,8 @@ ManageQuestions::ManageQuestions(fq::Repository *repository, QWidget *parent)
         questions[it->getQuestion()] = it;
     }
     updateQuestionsList();
-    connect(ui->removeQuestion, &QPushButton::released, this, &ManageQuestions::removeQuestions);
-    connect(this, &QDialog::finished, this, [this, repository]()
-            {
-                std::vector<fq::Question *> qvec;
-                qvec.reserve(questions.size());
-                for (const auto &pair : questions)
-                    qvec.push_back(pair.second);
-                repository->setQuestions(qvec); });
+    connect(ui->removeQuestion, &QPushButton::clicked, this, &ManageQuestions::removeQuestions);
+    connect(ui->save, &QPushButton::clicked, this, &ManageQuestions::saveAndClose);
 }
 
 ManageQuestions::~ManageQuestions()
