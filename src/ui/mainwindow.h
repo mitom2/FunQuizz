@@ -12,6 +12,7 @@
 #include <QFont>
 #include "repository.hpp"
 #include "managequestions.h"
+#include "about.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui
@@ -47,6 +48,8 @@ class MainWindow : public QMainWindow
     int totalQuestions;
 
     void repositoryAction(QAction *action);
+
+    void helpAction(QAction *action);
 
     void manageQuestions(QAction *action);
 

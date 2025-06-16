@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>843</width>
-    <height>696</height>
+    <height>697</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -35,7 +35,7 @@
          <x>0</x>
          <y>0</y>
          <width>823</width>
-         <height>628</height>
+         <height>630</height>
         </rect>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
@@ -162,7 +162,7 @@
              <x>0</x>
              <y>0</y>
              <width>803</width>
-             <height>446</height>
+             <height>460</height>
             </rect>
            </property>
            <layout class="QVBoxLayout" name="verticalLayout_2">
@@ -247,7 +247,7 @@
      <x>0</x>
      <y>0</y>
      <width>843</width>
-     <height>27</height>
+     <height>25</height>
     </rect>
    </property>
    <property name="font">
@@ -278,8 +278,20 @@
     </property>
     <addaction name="manageQuestions"/>
    </widget>
+   <widget class="QMenu" name="help">
+    <property name="font">
+     <font>
+      <pointsize>12</pointsize>
+     </font>
+    </property>
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="about"/>
+   </widget>
    <addaction name="repository"/>
    <addaction name="questions"/>
+   <addaction name="help"/>
   </widget>
   <action name="actionNew_Repository">
    <property name="text">
@@ -319,6 +331,16 @@
   <action name="manageQuestions">
    <property name="text">
     <string>Manage Questions</string>
+   </property>
+   <property name="font">
+    <font>
+     <pointsize>12</pointsize>
+    </font>
+   </property>
+  </action>
+  <action name="about">
+   <property name="text">
+    <string>About FunQuizz</string>
    </property>
    <property name="font">
     <font>

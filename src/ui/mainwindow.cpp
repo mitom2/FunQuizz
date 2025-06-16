@@ -166,6 +166,16 @@ void MainWindow::repositoryAction(QAction *action)
     }
 }
 
+void MainWindow::helpAction(QAction *action)
+{
+    if (action == ui->about)
+    {
+        About *about = new About(this);
+        about->setAttribute(Qt::WA_DeleteOnClose);
+        about->show();
+    }
+}
+
 void MainWindow::manageQuestions(QAction *action)
 {
     try
@@ -243,6 +253,11 @@ void MainWindow::fontSizeChanged(int value)
     ui->menuBar->setFont(font);
     ui->questions->setFont(font);
     ui->repository->setFont(font);
+    ui->help->setFont(font);
+    ui->about->setFont(font);
+    ui->manageQuestions->setFont(font);
+    ui->newRepository->setFont(font);
+    ui->openRepository->setFont(font);
     for (int i = 0; i < ui->answers->count(); ++i)
     {
         auto answerWidget = qobject_cast<QAbstractButton *>(ui->answers->itemAt(i)->widget());
@@ -258,6 +273,7 @@ MainWindow::MainWindow(QWidget *parent)
     connect(ui->ok, &QPushButton::clicked, this, &MainWindow::okClicked);
     connect(ui->repository, &QMenu::triggered, this, &MainWindow::repositoryAction);
     connect(ui->questions, &QMenu::triggered, this, &MainWindow::manageQuestions);
+    connect(ui->help, &QMenu::triggered, this, &MainWindow::helpAction);
     connect(ui->explanationSize, &QSlider::valueChanged, this, &MainWindow::fontSizeChanged);
     QColor barColor = QColor(0, 0, 0);
     QString style = QString("QProgressBar::chunk {background-color: %1;width: 20px;}").arg(barColor.name());
