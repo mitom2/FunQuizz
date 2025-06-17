@@ -82,6 +82,18 @@ namespace fq
         /// @return A pointer to a Question object created from the JSON data.
         /// @throws std::invalid_argument if the JSON object does not contain valid question data.
         static Question *fromJSON(const QJsonObject &json);
+
+        /// @brief Creates a Question object from parameters.
+        /// @param question The text of the question.
+        /// @param answers A vector of answers associated with the question.
+        /// @param explanation An explanation for the question.
+        /// @param type The type of the question.
+        /// @return A pointer to a Question object created from the parameters.
+        /// @throws std::invalid_argument if the answers vector is empty.
+        /// @throws std::invalid_argument if the question text is empty.
+        /// @throws std::invalid_argument if the type is not recognized.
+        /// @details The type parameter determines the specific type of question to create (e.g., single-choice, multiple-choice).
+        static Question *fromParameters(const std::string &question, const std::vector<Answer> &answers, const std::string &explanation, const std::string &type);
     };
 
     /// @brief Represents a single-choice question in the quiz.

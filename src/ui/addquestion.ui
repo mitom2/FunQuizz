@@ -33,25 +33,6 @@
      </item>
     </layout>
    </item>
-   <item row="1" column="0">
-    <widget class="QComboBox" name="type">
-     <item>
-      <property name="text">
-       <string>Single Choice</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Multiple Choice</string>
-      </property>
-     </item>
-     <item>
-      <property name="text">
-       <string>Multiple Choice with negative scoring enabled</string>
-      </property>
-     </item>
-    </widget>
-   </item>
    <item row="2" column="0">
     <layout class="QVBoxLayout" name="verticalLayout_2">
      <item>
@@ -62,10 +43,17 @@
       </widget>
      </item>
      <item>
-      <widget class="QListWidget" name="answers"/>
+      <widget class="QListWidget" name="answers">
+       <property name="showDropIndicator" stdset="0">
+        <bool>false</bool>
+       </property>
+       <property name="selectionMode">
+        <enum>QAbstractItemView::SelectionMode::MultiSelection</enum>
+       </property>
+      </widget>
      </item>
      <item>
-      <widget class="QPushButton" name="removeANswers">
+      <widget class="QPushButton" name="removeAnswers">
        <property name="enabled">
         <bool>false</bool>
        </property>
@@ -97,16 +85,6 @@
      </item>
     </layout>
    </item>
-   <item row="3" column="0">
-    <widget class="QTextEdit" name="explanation">
-     <property name="autoFormatting">
-      <set>QTextEdit::AutoFormattingFlag::AutoAll</set>
-     </property>
-     <property name="placeholderText">
-      <string>Enter explanation here...</string>
-     </property>
-    </widget>
-   </item>
    <item row="4" column="0">
     <layout class="QHBoxLayout" name="horizontalLayout_2">
      <item>
@@ -123,10 +101,63 @@
        </property>
       </widget>
      </item>
+     <item>
+      <widget class="QPushButton" name="close">
+       <property name="text">
+        <string>Cancel and close</string>
+       </property>
+      </widget>
+     </item>
     </layout>
+   </item>
+   <item row="3" column="0">
+    <widget class="QTextEdit" name="explanation">
+     <property name="autoFormatting">
+      <set>QTextEdit::AutoFormattingFlag::AutoAll</set>
+     </property>
+     <property name="placeholderText">
+      <string>Enter explanation here...</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QComboBox" name="type">
+     <item>
+      <property name="text">
+       <string>Single Choice</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Multiple Choice</string>
+      </property>
+     </item>
+     <item>
+      <property name="text">
+       <string>Negative Score Multiple Choice</string>
+      </property>
+     </item>
+    </widget>
    </item>
   </layout>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>close</sender>
+   <signal>clicked()</signal>
+   <receiver>AddQuestion</receiver>
+   <slot>close()</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>538</x>
+     <y>717</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>325</x>
+     <y>370</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

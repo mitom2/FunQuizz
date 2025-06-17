@@ -21,6 +21,14 @@ void ManageQuestions::updateQuestionsList()
     }
 }
 
+void ManageQuestions::addQuestions()
+{
+    AddQuestion *addQuestion = new AddQuestion(questions, this);
+    addQuestion->setAttribute(Qt::WA_DeleteOnClose);
+    addQuestion->exec();
+    updateQuestionsList();
+}
+
 void ManageQuestions::saveAndClose()
 {
     std::vector<fq::Question *> qvec;
@@ -46,6 +54,7 @@ ManageQuestions::ManageQuestions(fq::Repository *repository, QWidget *parent)
     updateQuestionsList();
     connect(ui->removeQuestion, &QPushButton::clicked, this, &ManageQuestions::removeQuestions);
     connect(ui->save, &QPushButton::clicked, this, &ManageQuestions::saveAndClose);
+    connect(ui->addQuestions, &QPushButton::clicked, this, &ManageQuestions::addQuestions);
 }
 
 ManageQuestions::~ManageQuestions()

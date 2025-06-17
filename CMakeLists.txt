@@ -21,6 +21,7 @@ qt_add_executable(FunQuizz
     src/ui/mainwindow.cpp
     src/ui/managequestions.cpp
     src/ui/about.cpp
+    src/ui/addquestion.cpp
 )
 
 target_include_directories(FunQuizz PRIVATE
