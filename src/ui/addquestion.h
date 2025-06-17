@@ -4,6 +4,7 @@
 #include <QDialog>
 #include <QListWidget>
 #include <QFont>
+#include <QMessageBox>
 #include <unordered_map>
 #include "question.hpp"
 
