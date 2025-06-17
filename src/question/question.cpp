@@ -106,7 +106,7 @@ fq::Question *fq::Question::fromJSON(const QJsonObject &json)
     throw std::invalid_argument("Unknown question type: " + type);
 }
 
-fq::Question *fq::Question::fromParameters(const std::string &question, const std::vector<fq::Answer> &answers, const std::string &explanation, const std::string &type)
+fq::Question *fq::Question::fromParameters(const std::string &question, const std::vector<fq::Answer> &answers, std::string explanation, const std::string &type)
 {
     if (answers.empty())
         throw std::invalid_argument("Answers vector cannot be empty.");
@@ -116,6 +116,8 @@ fq::Question *fq::Question::fromParameters(const std::string &question, const st
     std::mt19937 g(rd());
     std::vector<fq::Answer> shuffledAnswers = answers;
     std::shuffle(shuffledAnswers.begin(), shuffledAnswers.end(), g);
+    if (explanation.empty())
+        explanation = "No explanation provided";
     if (type == "single")
         return new fq::SingleChoiceQuestion(question, shuffledAnswers, explanation);
     else if (type == "multiple")

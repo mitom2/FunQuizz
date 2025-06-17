@@ -93,7 +93,7 @@ namespace fq
         /// @throws std::invalid_argument if the question text is empty.
         /// @throws std::invalid_argument if the type is not recognized.
         /// @details The type parameter determines the specific type of question to create (e.g., single-choice, multiple-choice).
-        static Question *fromParameters(const std::string &question, const std::vector<Answer> &answers, const std::string &explanation, const std::string &type);
+        static Question *fromParameters(const std::string &question, const std::vector<Answer> &answers, std::string explanation, const std::string &type);
     };
 
     /// @brief Represents a single-choice question in the quiz.
