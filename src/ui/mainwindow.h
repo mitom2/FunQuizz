@@ -13,6 +13,7 @@
 #include "repository.hpp"
 #include "managequestions.h"
 #include "about.h"
+#include "newrepository.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui

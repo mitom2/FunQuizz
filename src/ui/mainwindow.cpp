@@ -150,6 +150,17 @@ void MainWindow::repositoryAction(QAction *action)
         }
         else if (action == ui->newRepository)
         {
+            QString fileName = QFileDialog::getSaveFileName(this, "New Repository", "", "JSON Files (*.json);;All Files (*)");
+            if (!fileName.isEmpty())
+            {
+                if (fileName.right(5) != ".json")
+                {
+                    fileName += ".json";
+                }
+                CreateRepository *newRepository = new CreateRepository(repository, fileName.toStdString(), this);
+                newRepository->setAttribute(Qt::WA_DeleteOnClose);
+                newRepository->exec();
+            }
         }
     }
     catch (const std::invalid_argument &e)
