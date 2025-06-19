@@ -60,48 +60,56 @@ void MainWindow::okClicked(bool checked)
 
 void MainWindow::loadQuestion()
 {
-    try
+    if (repository == nullptr)
     {
-        currentQuestion = repository->getQuestion();
-        ui->question->setText(currentQuestion->getQuestion().c_str());
-        currentAnswers = currentQuestion->getAnswers();
-        removeAnswers();
-        for (std::size_t i = 0; i < currentAnswers.size(); ++i)
-        {
-            const auto &answer = currentAnswers[i];
-            if (currentQuestion->isSingleChoice())
-            {
-                auto answerWidget = new QRadioButton(QString::fromStdString(answer.text), this);
-                connect(answerWidget, &QRadioButton::toggled, this, &MainWindow::answerToggled);
-                answerWidget->setFont(ui->question->font());
-                ui->answers->addWidget(answerWidget);
-            }
-            else
-            {
-                auto answerWidget = new QCheckBox(QString::fromStdString(answer.text), this);
-                connect(answerWidget, &QCheckBox::toggled, this, &MainWindow::answerToggled);
-                answerWidget->setFont(ui->question->font());
-                ui->answers->addWidget(answerWidget);
-            }
-        }
-        ui->ok->setText("Skip");
-        ui->ok->setEnabled(true);
-        ui->explanation->setText("");
-        isAnswered = false;
-        selectedAnswers = 0;
+        QMessageBox::warning(this, "Error", "No repository loaded. Please open or create a repository first.");
         return;
     }
-    catch (const std::invalid_argument &e)
+    if (repository->getQuestionCount())
     {
-        QMessageBox::warning(this, "Error", QString::fromStdString(e.what()));
-    }
-    catch (const std::runtime_error &e)
-    {
-        QMessageBox::critical(this, "Error", QString::fromStdString(e.what()));
-    }
-    catch (const std::exception &e)
-    {
-        QMessageBox::critical(this, "Error", QString::fromStdString(e.what()));
+        try
+        {
+            currentQuestion = repository->getQuestion();
+            ui->question->setText(currentQuestion->getQuestion().c_str());
+            currentAnswers = currentQuestion->getAnswers();
+            removeAnswers();
+            for (std::size_t i = 0; i < currentAnswers.size(); ++i)
+            {
+                const auto &answer = currentAnswers[i];
+                if (currentQuestion->isSingleChoice())
+                {
+                    auto answerWidget = new QRadioButton(QString::fromStdString(answer.text), this);
+                    connect(answerWidget, &QRadioButton::toggled, this, &MainWindow::answerToggled);
+                    answerWidget->setFont(ui->question->font());
+                    ui->answers->addWidget(answerWidget);
+                }
+                else
+                {
+                    auto answerWidget = new QCheckBox(QString::fromStdString(answer.text), this);
+                    connect(answerWidget, &QCheckBox::toggled, this, &MainWindow::answerToggled);
+                    answerWidget->setFont(ui->question->font());
+                    ui->answers->addWidget(answerWidget);
+                }
+            }
+            ui->ok->setText("Skip");
+            ui->ok->setEnabled(true);
+            ui->explanation->setText("");
+            isAnswered = false;
+            selectedAnswers = 0;
+            return;
+        }
+        catch (const std::invalid_argument &e)
+        {
+            QMessageBox::warning(this, "Error", QString::fromStdString(e.what()));
+        }
+        catch (const std::runtime_error &e)
+        {
+            QMessageBox::critical(this, "Error", QString::fromStdString(e.what()));
+        }
+        catch (const std::exception &e)
+        {
+            QMessageBox::critical(this, "Error", QString::fromStdString(e.what()));
+        }
     }
     ui->score->setText("0/0");
     ui->scoreBar->setValue(0);
@@ -157,9 +165,13 @@ void MainWindow::repositoryAction(QAction *action)
                 {
                     fileName += ".json";
                 }
-                CreateRepository *newRepository = new CreateRepository(repository, fileName.toStdString(), this);
+                std::string path = fileName.toStdString();
+                CreateRepository *newRepository = new CreateRepository(path, this);
                 newRepository->setAttribute(Qt::WA_DeleteOnClose);
-                newRepository->exec();
+                if (newRepository->exec() == QDialog::Accepted)
+                {
+                    loadRepository(path);
+                }
             }
         }
     }

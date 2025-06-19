@@ -18,8 +18,6 @@ fq::Repository::Repository(const std::string &path)
         Question *question = fq::Question::fromJSON(questionObj);
         questions.push_back(question);
     }
-    if (questions.empty())
-        throw std::runtime_error("No questions found in the repository");
 }
 
 std::size_t fq::Repository::getQuestionCount() const

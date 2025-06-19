@@ -5,6 +5,10 @@
 #include <string>
 #include <QWidget>
 #include <QFileDialog>
+#include <QMessageBox>
+#include <QJsonObject>
+#include <QJsonArray>
+#include <QJsonDocument>
 #include "repository.hpp"
 
 QT_BEGIN_NAMESPACE
@@ -22,8 +26,12 @@ class CreateRepository : public QDialog
 
     void selectPath();
 
+    void createRepository();
+
+    std::string &initialPath;
+
 public:
-    explicit CreateRepository(fq::Repository *repository, const std::string &initialPath = "", QWidget *parent = nullptr);
+    explicit CreateRepository(std::string &initialPath, QWidget *parent = nullptr);
     ~CreateRepository();
 
 private:
