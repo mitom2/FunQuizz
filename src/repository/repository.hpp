@@ -10,6 +10,8 @@
 #include <QFile>
 #include <QJsonDocument>
 #include <QJsonObject>
+#include <QJsonArray>
+#include <QMessageBox>
 #include "question.hpp"
 
 /// @namespace fq
@@ -29,6 +31,19 @@ namespace fq
     protected:
         /// @brief Question collection loaded from the JSON file.
         std::vector<fq::Question *> questions;
+
+        /// @brief The path to the JSON file containing the questions.
+        std::string path;
+
+        /// @brief The type of the repository, used for saving.
+        /// @details This is used to determine the type of repository when creating it from a JSON file.
+        /// It must be set in the constructor of the derived classes.
+        std::string jsonType;
+
+        /// @brief Flag to disable the standard destructor.
+        /// @details This is used to prevent the standard destructor from being called, allowing for custom
+        /// cleanup logic in derived classes.
+        bool disableStdDestructor;
 
     public:
         /// @brief Constructs a Repository with the specified path to the JSON file.
@@ -75,7 +90,7 @@ namespace fq
         /// @brief Constructs a RandomRepository with the specified path to the JSON file.
         /// @param path The path to the JSON file containing the questions.
         /// @throws std::runtime_error if the file cannot be opened or if the JSON format is invalid.
-        RandomRepository(const std::string &path) : Repository(path) {}
+        RandomRepository(const std::string &path);
 
         /// @brief Returns a random question from the repository.
         /// @return A pointer to a randomly selected Question object.
@@ -99,7 +114,7 @@ namespace fq
         /// @brief Constructs a RandomNonRepeatingRepository with the specified path to the JSON file.
         /// @param path The path to the JSON file containing the questions.
         /// @throws std::runtime_error if the file cannot be opened or if the JSON format is invalid.
-        RandomNonRepeatingRepository(const std::string &path) : Repository(path) { remainingQuestions = questions; }
+        RandomNonRepeatingRepository(const std::string &path);
 
         /// @brief Returns a random question from the repository without repeating previously asked questions, unless all questions have been asked.
         /// @return A pointer to a randomly selected Question object.
@@ -130,7 +145,7 @@ namespace fq
     public:
         /// @brief Constructs an IntelligentRepository with the specified path to the JSON file.
         /// @param path The path to the JSON file containing the questions.
-        IntelligentRepository(const std::string &path) : Repository(path) { remainingQuestions = questions; }
+        IntelligentRepository(const std::string &path);
 
         /// @brief Returns a random question from the repository. If there are no remaining questions, it will select from hard questions.
         /// @details If the user has answered all questions, it will select from hard questions that the user has struggled with.

@@ -77,6 +77,10 @@ namespace fq
         /// @details The explanation can provide additional context or information about the question.
         std::string getExplanation() const;
 
+        /// @brief Converts the question to a JSON object.
+        /// @return A QJsonObject representing the question, including its text, answers, explanation, and type.
+        virtual QJsonObject toJSON() const = 0;
+
         /// @brief Creates a Question object from a JSON object.
         /// @param json The JSON object containing question data.
         /// @return A pointer to a Question object created from the JSON data.
@@ -118,6 +122,10 @@ namespace fq
         /// @brief Checks if the question is a single-choice question.
         /// @return true, as this is a single-choice question.
         virtual bool isSingleChoice() const override { return true; }
+
+        /// @brief Converts the question to a JSON object.
+        /// @return A QJsonObject representing the question, including its text, answers, explanation, and type.
+        virtual QJsonObject toJSON() const override;
     };
 
     /// @brief Represents a multiple-choice question in the quiz.
@@ -144,6 +152,10 @@ namespace fq
         /// @brief Checks if the question is a single-choice question.
         /// @return false, as this is a multiple-choice question.
         virtual bool isSingleChoice() const override { return false; }
+
+        /// @brief Converts the question to a JSON object.
+        /// @return A QJsonObject representing the question, including its text, answers, explanation, and type.
+        virtual QJsonObject toJSON() const override;
     };
 
     /// @brief Represents a multiple-choice question with negative scoring in the quiz.
@@ -170,6 +182,10 @@ namespace fq
         /// @brief Checks if the question is a single-choice question.
         /// @return false, as this is a multiple-choice question.
         virtual bool isSingleChoice() const override { return false; }
+
+        /// @brief Converts the question to a JSON object.
+        /// @return A QJsonObject representing the question, including its text, answers, explanation, and type.
+        virtual QJsonObject toJSON() const override;
     };
 
 }

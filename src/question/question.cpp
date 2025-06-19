@@ -20,6 +20,25 @@ double fq::SingleChoiceQuestion::getScore(const std::vector<Answer> &selectedAns
     return 0.0;
 }
 
+QJsonObject fq::SingleChoiceQuestion::toJSON() const
+{
+    QJsonObject json;
+    json["type"] = "single";
+    json["question"] = QString::fromStdString(questionText);
+    QJsonArray answersArray;
+    for (const auto &answer : answers)
+    {
+        QJsonObject answerObj;
+        answerObj["text"] = QString::fromStdString(answer.text);
+        answerObj["is_correct"] = answer.isCorrect;
+        answersArray.append(answerObj);
+    }
+    json["answers"] = answersArray;
+    json["explanation"] = QString::fromStdString(explanation);
+    json["text"] = QString::fromStdString(questionText);
+    return json;
+}
+
 double fq::MultipleChoiceQuestion::getScore(const std::vector<Answer> &selectedAnswers)
 {
     double score = 0.0;
@@ -44,6 +63,25 @@ double fq::MultipleChoiceQuestion::getScore(const std::vector<Answer> &selectedA
     return score < 0.0 ? 0.0 : score;
 }
 
+QJsonObject fq::MultipleChoiceQuestion::toJSON() const
+{
+    QJsonObject json;
+    json["type"] = "multiple";
+    json["question"] = QString::fromStdString(questionText);
+    QJsonArray answersArray;
+    for (const auto &answer : answers)
+    {
+        QJsonObject answerObj;
+        answerObj["text"] = QString::fromStdString(answer.text);
+        answerObj["is_correct"] = answer.isCorrect;
+        answersArray.append(answerObj);
+    }
+    json["answers"] = answersArray;
+    json["explanation"] = QString::fromStdString(explanation);
+    json["text"] = QString::fromStdString(questionText);
+    return json;
+}
+
 double fq::NegativeScoreMultipleChoiceQuestion::getScore(const std::vector<Answer> &selectedAnswers)
 {
     double score = 0.0;
@@ -66,6 +104,25 @@ double fq::NegativeScoreMultipleChoiceQuestion::getScore(const std::vector<Answe
             score -= answerValue;
     }
     return score;
+}
+
+QJsonObject fq::NegativeScoreMultipleChoiceQuestion::toJSON() const
+{
+    QJsonObject json;
+    json["type"] = "negative_multiple";
+    json["question"] = QString::fromStdString(questionText);
+    QJsonArray answersArray;
+    for (const auto &answer : answers)
+    {
+        QJsonObject answerObj;
+        answerObj["text"] = QString::fromStdString(answer.text);
+        answerObj["is_correct"] = answer.isCorrect;
+        answersArray.append(answerObj);
+    }
+    json["answers"] = answersArray;
+    json["explanation"] = QString::fromStdString(explanation);
+    json["text"] = QString::fromStdString(questionText);
+    return json;
 }
 
 fq::Question *fq::Question::fromJSON(const QJsonObject &json)

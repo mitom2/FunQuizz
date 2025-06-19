@@ -1,6 +1,6 @@
 #include "repository.hpp"
 
-fq::Repository::Repository(const std::string &path)
+fq::Repository::Repository(const std::string &path) : path(path), disableStdDestructor(false), jsonType("unknown")
 {
     QFile file(QString::fromStdString(path));
     if (!file.open(QIODevice::ReadOnly))
@@ -25,6 +25,11 @@ std::size_t fq::Repository::getQuestionCount() const
     return questions.size();
 }
 
+fq::RandomRepository::RandomRepository(const std::string &path) : Repository(path)
+{
+    jsonType = "random";
+}
+
 fq::Question *fq::RandomRepository::getQuestion()
 {
     if (questions.empty())
@@ -34,6 +39,12 @@ fq::Question *fq::RandomRepository::getQuestion()
     std::uniform_int_distribution<> dis(0, questions.size() - 1);
     int index = dis(gen);
     return questions[index];
+}
+
+fq::RandomNonRepeatingRepository::RandomNonRepeatingRepository(const std::string &path) : Repository(path)
+{
+    jsonType = "random_non_repeating";
+    remainingQuestions = questions;
 }
 
 fq::Question *fq::RandomNonRepeatingRepository::getQuestion()
@@ -47,6 +58,12 @@ fq::Question *fq::RandomNonRepeatingRepository::getQuestion()
     std::uniform_int_distribution<> dis(0, remainingQuestions.size() - 1);
     int index = dis(gen);
     return remainingQuestions[index];
+}
+
+fq::IntelligentRepository::IntelligentRepository(const std::string &path) : Repository(path)
+{
+    jsonType = "intelligent";
+    remainingQuestions = questions;
 }
 
 fq::Question *fq::IntelligentRepository::getQuestion()
@@ -104,6 +121,25 @@ void fq::Repository::setQuestions(const std::vector<fq::Question *> &questions_)
 
 fq::Repository::~Repository()
 {
+    if (!disableStdDestructor)
+    {
+        QJsonArray questionsArray;
+        for (const auto &question : questions)
+        {
+            QJsonObject questionObj = question->toJSON();
+            questionsArray.append(questionObj);
+        }
+        QJsonObject json;
+        json["questions"] = questionsArray;
+        json["type"] = QString::fromStdString(jsonType);
+        QJsonDocument doc(json);
+        QFile file(QString::fromStdString(path));
+        if (!file.open(QIODevice::WriteOnly))
+            QMessageBox::critical(nullptr, "Error", QString::fromStdString("Failed to save repository: " + path));
+        else
+            file.write(doc.toJson());
+        file.close();
+    }
     for (auto &question : questions)
     {
         delete question;
