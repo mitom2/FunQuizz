@@ -14,7 +14,7 @@ set(CMAKE_AUTORCC ON)
 find_package(Qt6 REQUIRED COMPONENTS Core Widgets)
 qt_standard_project_setup()
 
-qt_add_executable(FunQuizz
+qt_add_executable(FunQuizz WIN32
     main.cpp
     src/question/question.cpp
     src/repository/repository.cpp
