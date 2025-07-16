@@ -24,7 +24,6 @@ QJsonObject fq::SingleChoiceQuestion::toJSON() const
 {
     QJsonObject json;
     json["type"] = "single";
-    json["question"] = QString::fromStdString(questionText);
     QJsonArray answersArray;
     for (const auto &answer : answers)
     {
@@ -67,7 +66,6 @@ QJsonObject fq::MultipleChoiceQuestion::toJSON() const
 {
     QJsonObject json;
     json["type"] = "multiple";
-    json["question"] = QString::fromStdString(questionText);
     QJsonArray answersArray;
     for (const auto &answer : answers)
     {
@@ -110,7 +108,6 @@ QJsonObject fq::NegativeScoreMultipleChoiceQuestion::toJSON() const
 {
     QJsonObject json;
     json["type"] = "negative_multiple";
-    json["question"] = QString::fromStdString(questionText);
     QJsonArray answersArray;
     for (const auto &answer : answers)
     {
